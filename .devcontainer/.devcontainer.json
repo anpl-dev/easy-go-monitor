@@ -1,0 +1,12 @@
+{
+  "name": "Easy Go Monitor",
+  "dockerComposeFile": "docker/compose.yaml",
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "forwardPorts": [3000, 8080, 9080],
+  "portsAttributes": {
+    "3000": { "label": "Frontend", "onAutoForward": "openPreview" },
+    "8080": { "label": "Backend", "onAutoForward": "notify" },
+    "9080": { "label": "pgAdmin", "onAutoForward": "notify" }
+  }
+}

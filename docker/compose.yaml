@@ -1,4 +1,5 @@
 services:
+  # PostgreSQL
   postgres:
     image: postgres:15
     container_name: db_postgres
@@ -11,7 +12,14 @@ services:
       - "55432:5432"
     volumes:
       - pg_data:/var/lib/postgresql/data
+      - ../db/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d monitor_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
+  # pgAdmin (DB GUI)
   pgadmin:
     image: dpage/pgadmin4:latest
     container_name: pgadmin
@@ -22,6 +30,43 @@ services:
       - "9080:80"
     depends_on:
       - postgres
+
+  # Go バックエンド
+  backend:
+    build:
+      context: ..
+      dockerfile: ./docker/backend.Dockerfile
+    container_name: easy-go-monitor-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_DSN: postgres://user:password@postgres:5432/monitor_db?sslmode=disable
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../:/app
+    working_dir: /app
+    command: go run ./cmd/server/main.go
+
+  # React フロントエンド (開発モード)
+  frontend:
+    build:
+      context: ..
+      dockerfile: ./docker/frontend.Dockerfile
+    container_name: easy-go-monitor-frontend
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../web:/app
+      - /app/node_modules
+    working_dir: /app
+    command: npm run dev
 
 volumes:
   pg_data:
