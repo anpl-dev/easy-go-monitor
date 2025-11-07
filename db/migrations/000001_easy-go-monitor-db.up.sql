@@ -1,4 +1,3 @@
----- Initial Schema
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -46,31 +45,20 @@ CREATE TABLE IF NOT EXISTS runner_histories (
     created_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
 
-/* CREATE TABLE IF NOT EXISTS notifiers (
-    id INT PRIMARY KEY,
-    type VARCHAR(50) NOT NULL UNIQUE,
-    display_name VARCHAR(100) NOT NULL
-) */;
-
-/* CREATE TABLE IF NOT EXISTS notifications (
-    id UUID PRIMARY KEY,
-    runner_id UUID NOT NULL REFERENCES runners(id) ON DELETE CASCADE,
-    notifier_id INT NOT NULL REFERENCES notifiers(id) ON DELETE CASCADE,
-    type VARCHAR(50) NOT NULL,
-    trigger VARCHAR(50) NOT NULL,
-    message TEXT NOT NULL,
-    is_enabled BOOLEAN NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT now() NOT NULL
-);
- */
 CREATE INDEX idx_monitors_user_id ON monitors(user_id);
 CREATE INDEX idx_runners_user_id ON runners(user_id);
 CREATE INDEX idx_runner_histories_runner_id ON runner_histories(runner_id);
--------
 
-/* INSERT INTO notifiers (id, type, display_name) VALUES
-(1, 'email', 'Email'),
-(2, 'slack', 'Slack'),
-(3, 'webhook', 'Webhook')
-ON CONFLICT DO NOTHING */;
+
+-- Enable UUID generator
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- ---- Initial User ----
+INSERT INTO users (id, name, email, password)
+VALUES (
+    gen_random_uuid(),
+    'Test User',
+    'test@test.com',
+    '$2a$10$Xgor.aiKeqFPWXCj9ffu6OVzAjeiCbUgL3fwu5XvVsOqE1kw.fhZK'
+)
+ON CONFLICT DO NOTHING;
