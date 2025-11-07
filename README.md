@@ -1,19 +1,97 @@
 # Easy Go Monitor プロジェクト
 
-## このプロジェクトについて
+Golang + React で構築された簡易モニタリングツールです。
+Docker Compose による統合構成で、GitHub Codespaces 上でそのまま動作します。。
 
-このプロジェクトは外形監視を GUI から気軽にできるようにする Golang 製のプロジェクトです。
+## クイックスタート（GitHub Codespaces）
 
-### 起動方法
+このリポジトリは Codespaces 対応です。
+ローカル環境を構築せず、ブラウザ上だけでアプリを起動できます。
 
+### 1. Codespaces を起動
 
+リポジトリページの右上にある
+“<> Code” → “Codespaces” → “Create codespace on main”
+をクリックします。
 
+数分で開発環境が自動的に構築されます。
 
-### ER 図
+---
+
+### 2. サービスが自動起動
+
+Codespaces 起動後、コンテナが立ち上がります：
+
+| サービス   | ポート | 内容                      |
+| ---------- | ------ | ------------------------- |
+| `postgres` | 55432  | DB(PostgreSQL 15)         |
+| `pgadmin`  | 9080   | DB 管理 UI（Private）     |
+| `backend`  | 8080   | Go (Gin) API サーバー     |
+| `frontend` | 3000   | React + TypeScript (Vite) |
+
+VSCode（またはブラウザ上）右下の「PORTS」パネルから、  
+各ポートの URL を確認できます。
+
+---
+
+### 3. 公開ポートを設定
+
+| サービス        | 推奨可視性  | 用途                       |
+| --------------- | ----------- | -------------------------- |
+| Frontend (3000) | **Public**  | React アプリにアクセス     |
+| Backend (8080)  | **Public**  | API をフロントから呼び出す |
+| pgAdmin (9080)  | **Private** | 外部からアクセス禁止       |
+
+Ports タブで「3000」「8080」を右クリック → **Make Public** を選択。
+
+---
+
+### 4. アクセス URL
+
+- React Frontend:  
+   `https://<hash>-3000.app.github.dev`
+- Go Backend API:  
+   `https://<hash>-8080.app.github.dev/api/v1/health`
+- pgAdmin (Private):  
+   `https://<hash>-9080.app.github.dev`
+
+---
+
+### 5. テストアカウントでログイン
+
+初期データとして以下のユーザーが登録されています：
+
+| 項目     | 値              |
+| -------- | --------------- |
+| Email    | `test@test.com` |
+| Password | `test`          |
+
+これでログインすると、モニタ一覧やランナー管理画面にアクセスできます。
+
+---
+
+### 6.　 Codespaces 環境の削除(クリーンアップ)
+
+VS Code の左サイドバーで
+「Codespaces」 → 対象環境を右クリック → Delete を選択。
+
+もしくは
+
+GitHub の右上にあるプロフィールアイコン → Your Codespaces をクリック
+一覧から不要な Codespace の「…」メニューを開き、Delete を選択
+
+または、対象リポジトリページの
+「Code」 → 「Codespaces」タブ → 「Delete」ボタンからも削除できます。
+
+### 7. ローカル開発
+
+#### ER 図
 
 ![alt text](<easy go monitor.svg>)
 
-### データベースマイグレーション
+---
+
+#### データベースマイグレーション
 
 このプロジェクトは [golang-migrate](https://github.com/golang-migrate/migrate) を使用して
 PostgreSQL のマイグレーションを管理しています。
