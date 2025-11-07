@@ -46,14 +46,29 @@ Ports タブで「3000」「8080」を右クリック → **Make Public** を選
 
 ---
 
-### 4. アクセス URL
+### 4. アクセス URL の変更
 
-- React Frontend:  
-   `https://<hash>-3000.app.github.dev`
-- Go Backend API:  
-   `https://<hash>-8080.app.github.dev/api/v1/health`
-- pgAdmin (Private):  
-   `https://<hash>-9080.app.github.dev`
+Codespaces 環境では `localhost` ではなく、GitHub が発行する  
+`https://<hash>-8080.app.github.dev` を利用します。
+
+React の API ベース URL は  
+`web/src/constants/api.ts` に定義されています。
+
+例：
+
+```ts
+// web/src/constants/api.ts
+export const API_BASE_URL = "http://localhost:8080"; // ← これを変更
+```
+
+設定が完了したら URL にアクセス
+
+- React Frontend:
+  `https://<hash>-3000.app.github.dev`
+- Go Backend API:
+  `https://<hash>-8080.app.github.dev/api/v1/health`
+- pgAdmin (Private):
+  `https://<hash>-9080.app.github.dev`
 
 ---
 
