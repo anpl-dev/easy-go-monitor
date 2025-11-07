@@ -1,5 +1,5 @@
 {
-  "name": "Easy Go Monitor",
+  "name": "Easy Go Monitor Dev",
   "dockerComposeFile": "docker/compose.yaml",
   "service": "backend",
   "workspaceFolder": "/app",
@@ -8,5 +8,15 @@
     "3000": { "label": "Frontend", "onAutoForward": "openPreview" },
     "8080": { "label": "Backend", "onAutoForward": "notify" },
     "9080": { "label": "pgAdmin", "onAutoForward": "notify" }
+  },
+  "postCreateCommand": "docker compose up --build -d",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "ms-azuretools.vscode-docker",
+        "dbaeumer.vscode-eslint"
+      ]
+    }
   }
 }
